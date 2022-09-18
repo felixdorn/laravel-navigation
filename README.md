@@ -125,29 +125,6 @@ $navigation->addSectionUnless($isReader, 'Bookmarks', function (Section $section
 });
 ```
 
-### Blade Components
-
-> We provide a component called `<x-navigation-sidebar />`, feel free to use it as-is (needs AlpineJS to be fully functional).
-
-```php
-// app/View/Components/Topbar.php
-use Felix\Navigation\Components\Component;
-class Topbar extends Component {
-    public function viewName() : string{
-         return 'components.topbar';
-    }
-}
-```
-
-You get access to an `$items` variables that contains a `Navigation` object.
-
-Now in your views :
-
-```html
-
-<x-topbar :items="\Felix\Navigation\Navigation::myName()"/>
-```
-
 ## Testing
 
 ```bash
