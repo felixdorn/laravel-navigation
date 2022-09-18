@@ -6,7 +6,7 @@ Create navigation menus for your Laravel application.
 [![Formats](https://github.com/felixdorn/laravel-navigation/actions/workflows/formats.yml/badge.svg?branch=main)](https://github.com/felixdorn/laravel-navigation/actions/workflows/formats.yml)
 [![Version](https://poser.pugx.org/felixdorn/laravel-navigation/version)](//packagist.org/packages/felixdorn/laravel-navigation)
 [![Total Downloads](https://poser.pugx.org/felixdorn/laravel-navigation/downloads)](//packagist.org/packages/felixdorn/laravel-navigation)
-[![License](https://poser.pugx.org/felixdorn/laravel-navigation/license)](//packagist.org/packages/felixdorn/laravel-navigation)
+[![codecov](https://codecov.io/gh/felixdorn/laravel-navigation/branch/main/graph/badge.svg?token=xEQb4DhPlr)](https://codecov.io/gh/felixdorn/laravel-navigation)
 
 ## Installation
 
