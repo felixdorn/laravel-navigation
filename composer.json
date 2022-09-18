@@ -1,6 +1,6 @@
 {
     "name": "honda/adev-navigation",
-    "description": "navigation",
+    "description": "Create navigation menus for your Laravel application.",
     "keywords": [
         "honda",
         "navigation"
@@ -11,39 +11,43 @@
         {
             "name": "Félix Dorn",
             "email": "github@felixdorn.fr",
-            "role": "Developer"
+            "homepage": "https://felixdorn.fr"
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
+        "felixdorn/laravel-url-resolver": "^2.0",
         "honda/url-pattern-matcher": "^1.0.1",
-        "honda/url-resolver": "1.0.0",
-        "illuminate/contracts": "^8.0"
+        "illuminate/contracts": "^9.30"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3",
-        "orchestra/testbench": "^6.13",
+        "orchestra/testbench": "^7.7",
         "pestphp/pest": "^1.0.5",
-        "phpstan/phpstan": "^0.12.48",
-        "symfony/var-dumper": "^5.2.0"
+        "pestphp/pest-plugin-mock": "^1.0",
+        "phpstan/phpstan": "^1.8.5",
+        "symfony/var-dumper": "^6.1"
     },
     "autoload": {
         "psr-4": {
-            "Honda\\Navigation\\": "src"
+            "Felix\\Navigation\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Honda\\Navigation\\Tests\\": "tests"
+            "Felix\\Navigation\\Tests\\": "tests"
         }
     },
     "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        },
         "sort-packages": true
     },
     "scripts": {
         "lint": "php-cs-fixer fix -v",
         "test:lint": "php-cs-fixer fix -v --dry-run",
-        "test:types": "phpstan analyse --ansi --memory-limit=0",
+        "test:types": "phpstan analyse --ansi --memory-limit=-1",
         "test:unit": "pest --colors=always",
         "test": [
             "@test:lint",
@@ -52,11 +56,6 @@
         ]
     },
     "extra": {
-        "laravel": {
-            "providers": [
-                "Honda\\Navigation\\NavigationServiceProvider"
-            ]
-        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true

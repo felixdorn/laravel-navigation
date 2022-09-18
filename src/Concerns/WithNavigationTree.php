@@ -1,20 +1,23 @@
 <?php
 
-namespace Honda\Navigation\Concerns;
+namespace Felix\Navigation\Concerns;
 
 use ArrayIterator;
-use Honda\Navigation\Item;
-use RuntimeException;
+use Felix\Navigation\Item;
+use Felix\Navigation\Section;
 
 trait WithNavigationTree
 {
+    /** @var array<int, array{Item|Section, callable}> */
     protected array $tree = [];
 
+    /** @return array<int, Item|Section> */
     public function __invoke(): array
     {
         return $this->tree();
     }
 
+    /** @return array<int, Item|Section> */
     public function tree(): array
     {
         $built = [];
@@ -33,7 +36,7 @@ trait WithNavigationTree
         return $built;
     }
 
-    public function addIf(callable|bool $condition, string $name, ?callable $builder = null): self
+    public function addIf(callable|bool $condition, string $name, callable $builder): self
     {
         if (value($condition)) {
             $this->add($name, $builder);
@@ -42,16 +45,14 @@ trait WithNavigationTree
         return $this;
     }
 
-    public function add(string $name, ?callable $builder = null): self
+    public function add(string $name, callable $builder): self
     {
-        $builder ??= static fn($item) => $item;
-
         $this->tree[] = [new Item($name), $builder];
 
         return $this;
     }
 
-    public function addUnless(callable|bool $condition, string $name, ?callable $builder = null): self
+    public function addUnless(callable|bool $condition, string $name, callable $builder): self
     {
         if (!value($condition)) {
             $this->add($name, $builder);
@@ -60,6 +61,7 @@ trait WithNavigationTree
         return $this;
     }
 
+    /** @return ArrayIterator<int, Item|Section> */
     public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->tree());
@@ -68,25 +70,5 @@ trait WithNavigationTree
     public function count(): int
     {
         return count($this->tree());
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->tree()[$offset];
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return array_key_exists($offset, $this->tree());
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        throw new RuntimeException('You can not set an item in the navigation tree');
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
-        throw new RuntimeException('You can not unset an item in the navigation tree');
     }
 }

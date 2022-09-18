@@ -1,9 +1,9 @@
 <?php
 
-namespace Honda\Navigation;
+namespace Felix\Navigation;
 
+use Felix\UrlResolver\UrlResolver;
 use Honda\UrlPatternMatcher\UrlPatternMatcher;
-use Honda\UrlResolver\UrlResolver;
 
 class Item
 {
@@ -18,7 +18,7 @@ class Item
         $this->name = $name;
     }
 
-    public function href(?string $href, array $context = []): self
+    public function href(string $href, mixed $context = []): self
     {
         $this->href = UrlResolver::guess($href, $context);
 
@@ -51,7 +51,8 @@ class Item
 
         $matcher = new UrlPatternMatcher($this->pattern ?? $this->href ?? '');
 
-        return $this->pattern !== null && $matcher->match(app('request')->path());
+        /* @phpstan-ignore-next-line */
+        return $this->pattern !== null && $matcher->match(request()->path());
     }
 
     public function activePattern(string $pattern): self

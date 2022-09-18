@@ -1,11 +1,8 @@
 <?php
 
-use Honda\Navigation\Item;
-use Honda\Navigation\Navigation;
-use Honda\Navigation\Tests\TestCase;
+use Felix\Navigation\Item;
+use Felix\Navigation\Navigation;
 use Illuminate\Support\Traits\Macroable;
-
-uses(TestCase::class);
 
 it('can add items', function () {
     $navigation = new Navigation();
@@ -19,59 +16,59 @@ it('can add items', function () {
 it('can add items if a condition is true', function () {
     expect(
         (new Navigation())
-            ->addIf(true, 'Home')
+            ->addIf(true, 'Home', fn () => null)
             ->tree()
     )->toMatchTree([new Item('Home')]);
 
     expect(
         (new Navigation())
-            ->addIf(fn () => true, 'Home')
+            ->addIf(fn () => true, 'Home', fn () => null)
             ->tree()
     )->toMatchTree([new Item('Home')]);
 
     expect(
         (new Navigation())
-            ->addIf(false, 'Home')
+            ->addIf(false, 'Home', fn () => null)
             ->tree()
     )->toBeEmpty();
 
     expect(
         (new Navigation())
-            ->addIf(fn () => false, 'Home')
+            ->addIf(fn () => false, 'Home', fn () => null)
             ->tree()
     )->toBeEmpty();
 });
 it('can add items if unless a condition is true', function () {
     expect(
         (new Navigation())
-            ->addUnless(true, 'Home')
+            ->addUnless(true, 'Home', fn () => null)
             ->tree()
     )->toBeEmpty();
 
     expect(
         (new Navigation())
-            ->addUnless(fn () => true, 'Home')
+            ->addUnless(fn () => true, 'Home', fn () => null)
             ->tree()
     )->toBeEmpty();
 
     expect(
         (new Navigation())
-            ->addUnless(false, 'Home')
+            ->addUnless(false, 'Home', fn () => null)
             ->tree()
     )->toMatchTree([new Item('Home')]);
 
     expect(
         (new Navigation())
-            ->addUnless(fn () => false, 'Home')
+            ->addUnless(fn () => false, 'Home', fn () => null)
             ->tree()
     )->toMatchTree([new Item('Home')]);
 });
 
 it('returns a tree when invoked', function () {
     $navigation = (new Navigation())
-        ->add('One')
-        ->add('Two')
-        ->add('Three');
+        ->add('One', fn () => null)
+        ->add('Two', fn () => null)
+        ->add('Three', fn () => null);
 
     expect($navigation())->toMatchTree([
         new Item('One'),
@@ -81,11 +78,13 @@ it('returns a tree when invoked', function () {
 });
 
 it('calls the method tree when invoked', function () {
-    $navigation = Mockery::mock(Navigation::class);
-    $navigation->shouldReceive('__invoke')->andReturn([]);
-    $navigation->shouldReceive('tree')->andReturn([]);
+    $navigation = new Navigation();
 
-    $navigation->__invoke();
+    $navigation->add('One', fn () => null);
+
+    expect($navigation())->toMatchTree([
+        new Item('One'),
+    ]);
 });
 
 it('does not need to return an item to configure it', function () {
@@ -100,7 +99,7 @@ it('does not need to return an item to configure it', function () {
 });
 
 it('can iterate over the items', function () {
-    $navigation = (new Navigation())->add('Page');
+    $navigation = (new Navigation())->add('Page', fn () => null);
 
     foreach ($navigation as $item) {
         expect($item)->toMatchObjectDeeply(new Item('Page'));
@@ -108,18 +107,18 @@ it('can iterate over the items', function () {
 });
 
 it('can register slots', function () {
-    $navigation = new Honda\Navigation\Navigation();
+    $navigation = new Felix\Navigation\Navigation();
 
     $navigation->slot('a', fn () => 'b');
     $navigation->slot('b', 'c');
 
-    expect($navigation->getSlots())->toBe([
-        'a' => 'b',
-        'b' => 'c',
-    ]);
+    $slots = $navigation->getSlots();
+
+    expect($slots['a']->toHtml())->toBe('b');
+    expect($slots['b']->toHtml())->toBe('c');
 });
 it('can register injected variables', function () {
-    $navigation = new Honda\Navigation\Navigation();
+    $navigation = new Felix\Navigation\Navigation();
 
     $navigation->inject('a', [4, 5]);
     $navigation->inject('b', 'c');
@@ -131,10 +130,10 @@ it('can register injected variables', function () {
 });
 
 it('is macroable', function () {
-    expect(Navigation::class)->toUseTrait(Macroable::class);
+    expect(class_uses(Navigation::class))->toContain(Macroable::class);
 
     Navigation::macro('test', function (Navigation $navigation) {
-        $navigation->add('Hey');
+        $navigation->add('Hey', fn () => null);
     });
 
     expect(Navigation::test())->toBeInstanceOf(Navigation::class);

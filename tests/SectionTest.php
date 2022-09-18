@@ -1,17 +1,14 @@
 <?php
 
-use Honda\Navigation\Item;
-use Honda\Navigation\Navigation;
-use Honda\Navigation\Section;
-use Honda\Navigation\Tests\TestCase;
-
-uses(TestCase::class);
+use Felix\Navigation\Item;
+use Felix\Navigation\Navigation;
+use Felix\Navigation\Section;
 
 it('can add a section', function () {
     $navigation = new Navigation();
 
     $navigation->addSection('Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toMatchTree([
@@ -23,7 +20,7 @@ it('can add a section if a condition is true', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionIf(true, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toMatchTree([
@@ -35,7 +32,7 @@ it('can add a section if a callable returns true', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionIf(fn () => true, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toMatchTree([
@@ -47,7 +44,7 @@ it('can add a section unless a condition is true', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionUnless(fn () => false, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toMatchTree([
@@ -59,7 +56,7 @@ it('can add a section unless a callable returns true', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionUnless(fn () => false, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toMatchTree([
@@ -71,7 +68,7 @@ it('does not add a section if a condition is false', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionIf(false, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toBeEmpty();
@@ -81,7 +78,7 @@ it('does not add a section if a callable returns false', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionIf(fn () => false, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toBeEmpty();
@@ -91,7 +88,7 @@ it('does not add a section unless a condition is false', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionUnless(fn () => true, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toBeEmpty();
@@ -101,7 +98,7 @@ it('does not add a section unless a callable returns false', function () {
     $navigation = new Navigation();
 
     $navigation->addSectionUnless(fn () => true, 'Section', $builder = function (Section $section) {
-        return $section->add('Hello');
+        return $section->add('Hello', fn () => null);
     });
 
     expect($navigation->tree())->toBeEmpty();

@@ -1,19 +1,21 @@
 # Navigation for Laravel
 
-[![Tests](https://github.com/laravel-honda/navigation/actions/workflows/tests.yml/badge.svg?branch=master)](https://github.com/laravel-honda/navigation/actions/workflows/tests.yml)
-[![Formats](https://github.com/laravel-honda/navigation/actions/workflows/formats.yml/badge.svg?branch=master)](https://github.com/laravel-honda/navigation/actions/workflows/formats.yml)
-[![Version](https://poser.pugx.org/honda/navigation/version)](//packagist.org/packages/honda/navigation)
-[![Total Downloads](https://poser.pugx.org/honda/navigation/downloads)](//packagist.org/packages/honda/navigation)
-[![License](https://poser.pugx.org/honda/navigation/license)](//packagist.org/packages/honda/navigation)
+Create navigation menus for your Laravel application.
+
+[![Tests](https://github.com/felixdorn/laravel-navigation/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/felixdorn/laravel-navigation/actions/workflows/tests.yml)
+[![Formats](https://github.com/felixdorn/laravel-navigation/actions/workflows/formats.yml/badge.svg?branch=main)](https://github.com/felixdorn/laravel-navigation/actions/workflows/formats.yml)
+[![Version](https://poser.pugx.org/felixdorn/laravel-navigation/version)](//packagist.org/packages/felixdorn/laravel-navigation)
+[![Total Downloads](https://poser.pugx.org/felixdorn/laravel-navigation/downloads)](//packagist.org/packages/felixdorn/laravel-navigation)
+[![License](https://poser.pugx.org/felixdorn/laravel-navigation/license)](//packagist.org/packages/felixdorn/laravel-navigation)
 
 ## Installation
 
-> Requires [PHP 8.0.0+](https://php.net/releases)
+> Requires [PHP 8.0+](https://php.net/releases)
 
 You can install the package via composer:
 
 ```bash
-composer require honda/navigation
+composer require felixdorn/laravel-navigation
 ```
 
 ## Usage
@@ -21,7 +23,7 @@ composer require honda/navigation
 ### Creating a navigation bar
 
 ```php
-use Honda\Navigation\Navigation;
+use Felix\Navigation\Navigation;
 
 Navigation::macro('theName', function (Navigation $navigation) {
     // ...
@@ -31,7 +33,7 @@ Navigation::macro('theName', function (Navigation $navigation) {
 ### Rendering a navigation bar
 
 ```php
-use Honda\Navigation\Navigation;
+use Felix\Navigation\Navigation;
 
 Navigation::theName();
 ```
@@ -85,7 +87,7 @@ $item->activePattern('/articles/*');
 #### Conditionally rendered items
 
 ```php
-use Honda\Navigation\Item;
+use Felix\Navigation\Item;
 
 $navigation->addIf($isAdmin, 'Settings', function (Item $item) {
     // ...
@@ -100,8 +102,8 @@ $navigation->addUnless($isReader, 'Articles', function (Item $item) {
 #### Add a section
 
 ```php
-use Honda\Navigation\Item;
-use Honda\Navigation\Section;
+use Felix\Navigation\Item;
+use Felix\Navigation\Section;
 
 $navigation->addSection('Name', function (Section $section) {
     $section->add('Child', function (Item $item) {
@@ -113,7 +115,7 @@ $navigation->addSection('Name', function (Section $section) {
 #### Conditionally rendered sections
 
 ```php
-use Honda\Navigation\Section;
+use Felix\Navigation\Section;
 
 $navigation->addSectionIf($isAdmin, 'Admin', function (Section $section) {
     // ...
@@ -129,7 +131,7 @@ $navigation->addSectionUnless($isReader, 'Bookmarks', function (Section $section
 
 ```php
 // app/View/Components/Topbar.php
-use Honda\Navigation\Components\Component;
+use Felix\Navigation\Components\Component;
 class Topbar extends Component {
     public function viewName() : string{
          return 'components.topbar';
@@ -143,7 +145,7 @@ Now in your views :
 
 ```html
 
-<x-topbar :items="\Honda\Navigation\Navigation::myName()"/>
+<x-topbar :items="\Felix\Navigation\Navigation::myName()"/>
 ```
 
 ## Testing

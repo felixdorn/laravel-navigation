@@ -1,9 +1,6 @@
 <?php
 
-use Honda\Navigation\Item;
-use Honda\Navigation\Tests\TestCase;
-
-uses(TestCase::class);
+use Felix\Navigation\Item;
 
 it('can set a name', function () {
     $item = new Item('Page');

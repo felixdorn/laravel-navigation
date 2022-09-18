@@ -1,10 +1,11 @@
 <?php
 
-namespace Honda\Navigation;
+namespace Felix\Navigation;
 
-use Honda\Navigation\Concerns\WithNavigationTree;
+use Felix\Navigation\Concerns\WithNavigationTree;
 use IteratorAggregate;
 
+/** @implements IteratorAggregate<int, Item|Section> */
 class Section implements IteratorAggregate
 {
     use WithNavigationTree;

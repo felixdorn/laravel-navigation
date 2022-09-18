@@ -1,6 +1,8 @@
 <?php
 
-use Pest\Expectations\Expectation;
+use Pest\Expectation;
+
+uses(\Orchestra\Testbench\TestCase::class)->in('.');
 
 expect()->extend('toMatchObjectDeeply', function ($object) {
     if (is_object($object)) {
@@ -56,14 +58,6 @@ expect()->extend('toMatchTree', function (iterable $iterable) {
         $this->toHaveKey($k);
         expect($this->value[$k])->toMatchObjectDeeply($iterable[$k]);
     }
-
-    return $this;
-});
-
-expect()->extend('toUseTrait', function (string $trait) {
-    $traits = class_uses_recursive($this->value);
-
-    expect($traits)->toContain($trait);
 
     return $this;
 });
