@@ -1,3 +1,6 @@
+> Repository has been moved from [laravel-honda/navigation](https://github.com/laravel-honda/navigation)
+> to [felixdorn/laravel-navigation](https://github.com/felixdorn/laravel-navigation).
+
 # Navigation for Laravel
 
 Create navigation menus for your Laravel application.
