@@ -30,10 +30,15 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, mbstring, zip, fileinfo
-          coverage: none
+          coverage: xdebug
 
       - name: Install Composer dependencies
         run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
-      - name: Integration Tests
-        run: php ./vendor/bin/pest
+      - name: Integration Test
+        env:
+          XDEBUG_MODE: coverage
+        run: php ./vendor/bin/pest --coverage-clover clover.xml
+
+      - name: Upload coverage to Codecov
+        run: bash <(curl -s https://codecov.io/bash)
