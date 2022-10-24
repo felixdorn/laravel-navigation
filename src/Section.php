@@ -3,10 +3,11 @@
 namespace Felix\Navigation;
 
 use Felix\Navigation\Concerns\WithNavigationTree;
+use Illuminate\Contracts\Support\Arrayable;
 use IteratorAggregate;
 
 /** @implements IteratorAggregate<int, Item|Section> */
-class Section implements IteratorAggregate
+class Section implements IteratorAggregate, Arrayable
 {
     use WithNavigationTree;
 
@@ -17,11 +18,19 @@ class Section implements IteratorAggregate
     public function isActive(): bool
     {
         foreach ($this->tree() as $item) {
-            if ($item->isActive()) {
+            if ($item['active']) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'items' => $this->tree(),
+        ];
     }
 }

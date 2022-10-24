@@ -7,25 +7,21 @@ it('can set a name', function () {
     expect($item->name)->toBe('Page');
 });
 
-it('can set an icon', function () {
-    $item = new Item('Page');
-    expect($item->icon)->toBeNull();
-    $item->icon('circle-check');
-    expect($item->icon)->toBe('circle-check');
-});
-
 it('can set an active pattern', function () {
     $item = new Item('Page');
-//    expect($item->isActive())->toBeFalse();
+    expect($item->isActive())->toBeFalse();
     $item->activePattern('/');
     expect($item->isActive())->toBeTrue();
     $item->activePattern('/hello');
     expect($item->isActive())->toBeFalse();
 });
 
-it('can be always active', function () {
+it('can set some metadata', function () {
     $item = new Item('Page');
-    expect($item->isActive())->toBeFalse();
-    $item->alwaysActive();
-    expect($item->isActive())->toBeTrue();
+    expect($item->metadata)->toBe([]);
+    $item->meta(['foo' => 'bar']);
+    expect($item->metadata)->toBe(['foo' => 'bar']);
+    $item->meta(['bar' => 'baz']);
+    expect($item->metadata)->toBe(['foo' => 'bar', 'bar' => 'baz']);
+
 });

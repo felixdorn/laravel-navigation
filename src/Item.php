@@ -4,14 +4,14 @@ namespace Felix\Navigation;
 
 use Felix\UrlResolver\UrlResolver;
 use Honda\UrlPatternMatcher\UrlPatternMatcher;
+use Illuminate\Contracts\Support\Arrayable;
 
-class Item
+class Item implements Arrayable
 {
     public string $name;
-    public ?string $href      = null;
-    public ?string $icon      = null;
-    public ?string $pattern   = null;
-    public bool $alwaysActive = false;
+    public ?string $url = null;
+    public ?string $pattern = null;
+    public array $metadata = [];
 
     public function __construct(string $name)
     {
@@ -20,39 +20,16 @@ class Item
 
     public function href(string $href, mixed $context = []): self
     {
-        $this->href = UrlResolver::guess($href, $context);
+        $this->url = UrlResolver::guess($href, $context);
 
         return $this;
     }
 
-    public function icon(string $icon): self
+    public function meta(array $metadata): self
     {
-        $this->icon = $icon;
+        $this->metadata = [...$this->metadata, ...$metadata];
 
         return $this;
-    }
-
-    public function alwaysActive(): self
-    {
-        $this->alwaysActive = true;
-
-        return $this;
-    }
-
-    public function isActive(): bool
-    {
-        if ($this->alwaysActive) {
-            return true;
-        }
-
-        if (empty($this->pattern) && empty($this->href)) {
-            return false;
-        }
-
-        $matcher = new UrlPatternMatcher($this->pattern ?? $this->href ?? '');
-
-        /* @phpstan-ignore-next-line */
-        return $this->pattern !== null && $matcher->match(request()->path());
     }
 
     public function activePattern(string $pattern): self
@@ -60,5 +37,27 @@ class Item
         $this->pattern = $pattern;
 
         return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'url' => $this->url,
+            'active' => $this->isActive(),
+            ...$this->metadata,
+        ];
+    }
+
+    public function isActive(): bool
+    {
+        if (empty($this->pattern) && empty($this->url)) {
+            return false;
+        }
+
+        $matcher = new UrlPatternMatcher($this->pattern ?? $this->url ?? '');
+
+        /* @phpstan-ignore-next-line */
+        return $this->pattern !== null && $matcher->match(request()->path());
     }
 }

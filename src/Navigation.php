@@ -5,45 +5,39 @@ namespace Felix\Navigation;
 use BadMethodCallException;
 use Countable;
 use Felix\Navigation\Concerns\WithNavigationTree;
-use Illuminate\Support\HtmlString;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Traits\Macroable;
 use IteratorAggregate;
 
 /** @implements IteratorAggregate<int, Item|Section> */
-class Navigation implements IteratorAggregate, Countable
+class Navigation implements IteratorAggregate, Countable, Arrayable
 {
     use WithNavigationTree;
-    use Macroable;
 
-    /** @var array<string, mixed> */
-    protected array $injectedVariables = [];
-    /** @var array<string, HtmlString> */
-    protected array $slots = [];
+    protected static array $navigations = [];
 
-    /** @param array{} $parameters  */
-    public static function __callStatic(string $method, array $parameters): self
+    /**
+     * @param string $name
+     * @param callable{Navigation} $callback
+     * @return static
+     */
+    public static function new(string $name, callable $callback): static
     {
-        if (array_key_exists($method, static::$macros)) {
-            $navigation = new static();
+        $navigation = new static();
+        $callback($navigation);
 
-            call_user_func(static::$macros[$method], $navigation, ...$parameters);
+        static::$navigations[$name] = $navigation;
 
-            return $navigation;
+        return $navigation;
+    }
+
+    public static function __callStatic(string $name, array $arguments): static
+    {
+        if (isset(static::$navigations[$name])) {
+            return static::$navigations[$name];
         }
 
-        throw new BadMethodCallException(sprintf('[%s] is not registered', $method));
-    }
-
-    /** @return array<string, mixed> */
-    public function getInjectedVariables(): array
-    {
-        return $this->injectedVariables;
-    }
-
-    /** @return array<string, HtmlString>  */
-    public function getSlots(): array
-    {
-        return $this->slots;
+        throw new BadMethodCallException("Navigation {$name} does not exist. Did you register it using Navigation::new() ?");
     }
 
     public function addSectionIf(bool|callable $condition, string $name, callable $builder): self
@@ -71,18 +65,8 @@ class Navigation implements IteratorAggregate, Countable
         return $this;
     }
 
-    public function inject(string $key, mixed $value): self
+    public function toArray(): array
     {
-        $this->injectedVariables[$key] = $value;
-
-        return $this;
-    }
-
-    public function slot(string $name, string|callable|HtmlString $value): self
-    {
-        /* @phpstan-ignore-next-line */
-        $this->slots[$name] = new HtmlString((string) value($value));
-
-        return $this;
+        return $this->tree();
     }
 }

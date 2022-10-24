@@ -25,15 +25,19 @@ trait WithNavigationTree
         foreach ($this->tree as $branch) {
             [$element, $builder] = $branch;
 
-            $builtElement = $builder($element);
-            if (!$builtElement) {
-                $builtElement = $element;
-            }
+            $builder($element);
 
-            $built[] = $builtElement;
+            $built[] = $element->toArray();
         }
 
         return $built;
+    }
+
+    public function addUnless(callable|bool $condition, string $name, callable $builder): self
+    {
+        $this->addIf(!value($condition), $name, $builder);
+
+        return $this;
     }
 
     public function addIf(callable|bool $condition, string $name, callable $builder): self
@@ -48,15 +52,6 @@ trait WithNavigationTree
     public function add(string $name, callable $builder): self
     {
         $this->tree[] = [new Item($name), $builder];
-
-        return $this;
-    }
-
-    public function addUnless(callable|bool $condition, string $name, callable $builder): self
-    {
-        if (!value($condition)) {
-            $this->add($name, $builder);
-        }
 
         return $this;
     }
