@@ -5,23 +5,18 @@ namespace Felix\Navigation;
 use BadMethodCallException;
 use Countable;
 use Felix\Navigation\Concerns\WithNavigationTree;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Support\Traits\Macroable;
 use IteratorAggregate;
 
 /** @implements IteratorAggregate<int, Item|Section> */
-class Navigation implements IteratorAggregate, Countable, Arrayable
+class Navigation implements IteratorAggregate, Countable
 {
     use WithNavigationTree;
 
+    /** @var static[] */
     protected static array $navigations = [];
 
-    /**
-     * @param string $name
-     * @param callable{Navigation} $callback
-     * @return static
-     */
-    public static function new(string $name, callable $callback): static
+    /** @param callable(self):mixed $callback */
+    public static function register(string $name, callable $callback): static
     {
         $navigation = new static();
         $callback($navigation);
@@ -31,6 +26,7 @@ class Navigation implements IteratorAggregate, Countable, Arrayable
         return $navigation;
     }
 
+    /** @param array{} $arguments */
     public static function __callStatic(string $name, array $arguments): static
     {
         if (isset(static::$navigations[$name])) {
@@ -65,8 +61,9 @@ class Navigation implements IteratorAggregate, Countable, Arrayable
         return $this;
     }
 
+    /** @return (non-empty-array<scalar|null>|array{name: string, items: array<int, array<string, mixed>>})[] */
     public function toArray(): array
     {
-        return $this->tree();
+        return array_map(fn (Item|Section $e) => $e->toArray(), $this->tree());
     }
 }

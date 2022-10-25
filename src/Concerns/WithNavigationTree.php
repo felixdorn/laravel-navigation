@@ -27,7 +27,7 @@ trait WithNavigationTree
 
             $builder($element);
 
-            $built[] = $element->toArray();
+            $built[] = $element;
         }
 
         return $built;
@@ -49,7 +49,7 @@ trait WithNavigationTree
         return $this;
     }
 
-    /** @param callable(self) $builder */
+    /** @param callable(self):mixed $builder */
     public function add(string $name, callable $builder): self
     {
         $this->tree[] = [new Item($name), $builder];

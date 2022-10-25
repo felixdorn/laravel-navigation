@@ -1,14 +1,18 @@
-> Repository has been moved from [laravel-honda/navigation](https://github.com/laravel-honda/navigation)
-> to [felixdorn/laravel-navigation](https://github.com/felixdorn/laravel-navigation).
-
 # Navigation for Laravel
 
-Create navigation menus for your Laravel application.
+Create navigation menus for your Laravel application, works out of the box with Inertia.
+
+## Features
+
+* Inertia support
+* Conditionally add sections / items.
+* Easily specify if a route is active
+* Add metadata to items
 
 [![Tests](https://github.com/felixdorn/laravel-navigation/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/felixdorn/laravel-navigation/actions/workflows/tests.yml)
 [![Formats](https://github.com/felixdorn/laravel-navigation/actions/workflows/formats.yml/badge.svg?branch=main)](https://github.com/felixdorn/laravel-navigation/actions/workflows/formats.yml)
 [![Version](https://poser.pugx.org/felixdorn/laravel-navigation/version)](//packagist.org/packages/felixdorn/laravel-navigation)
-[![Total Downloads](https://poser.pugx.org/felixdorn/laravel-navigation/downloads)](//packagist.org/packages/felixdorn/laravel-navigation)
+[![Total Downloads](https://poser.pugx.org/honda/navigation/downloads)](//packagist.org/packages/felixdorn/laravel-navigation)
 [![codecov](https://codecov.io/gh/felixdorn/laravel-navigation/branch/main/graph/badge.svg?token=xEQb4DhPlr)](https://codecov.io/gh/felixdorn/laravel-navigation)
 
 ## Installation
@@ -28,67 +32,18 @@ composer require felixdorn/laravel-navigation
 ```php
 use Felix\Navigation\Navigation;
 
-Navigation::new('dashboardSidebar', function (Navigation $navigation) {
-    // ...
+Navigation::register('dashboardSidebar', function (Navigation $navigation) {
+    
 });
 ```
 
-### Rendering a navigation bar
+### Retrieving a navigation bar
 
 ```php
 use Felix\Navigation\Navigation;
 
 Navigation::dashboardSidebar();
 ```
-
-### Items
-
-#### Href
-
-If you pass a route name like `login` or `articles.index`, the actual path will be resolved. You may pass additional
-context to the route resolver.
-
-If you pass anything else, it will be rendered as-is.
-
-```php
-$item->href('articles.index');
-```
-
-```php
-$item->href('articles.edit', ['article' => 1]);
-```
-
-```php
-$item->href('https://repo.new');
-```
-
-#### Active pattern
-
-Mark an item as active based on a pattern. The resolved route path is used if no active pattern is provided.
-Check out [URL Pattern Matcher](https://github.com/laravel-honda/url-pattern-matcher) for more details.
-
-```php
-$item->activePattern('/articles/*');
-```
-
-On a des routes type:
-
-'Articles' => 'activePattern' => 'articles.*'
-'About' => 'activePattern' => 'about'
-GET 'articles.index' => '/articles',
-GET 'articles.edit' => '/articles/{article}',
-GET 'articles.create' => '/articles/create',
-GET "articles.show" => "/articles/{article}",
-DELETE "articles.destroy" => "/articles/{article}",
-PUT|PATCH "articles.update" => "/articles/{article}",
-POST "articles.store" => "/articles",
-GET 'about' => '/about',
-GET 'some.other.route' => '/contact'
-GET 'something.else' => '/contact/managers'
-
-```php
-
-
 
 #### Conditionally rendered items
 
@@ -129,6 +84,24 @@ $navigation->addSectionIf($isAdmin, 'Admin', function (Section $section) {
 $navigation->addSectionUnless($isReader, 'Bookmarks', function (Section $section) {
     // ...
 });
+```
+
+### Items
+
+```php
+/** @var \Felix\Navigation\Item $item **/
+$item->route('articles.index');
+
+$item->route('tenant.show', ['tenant' => 1]);
+
+$item->url('https://github.com/felixdorn')
+
+$item->route('articles.index')
+    ->activeWhenRouteMatches('articles.*') // active for articles.index / articles.edit / articles.anything
+
+$item->meta(['a' => 'b']);
+// same as
+$item->a('b');
 ```
 
 ## Testing

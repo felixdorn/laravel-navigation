@@ -3,22 +3,19 @@
 namespace Felix\Navigation;
 
 use BadMethodCallException;
-use Illuminate\Contracts\Support\Arrayable;
 
-class Item implements Arrayable
+class Item
 {
-    /** @var callable(self): bool Returns true if the current item should be marked as active, false otherwise. */
+    /** @var (callable(self):bool) Returns true if the current item should be marked as active, false otherwise. */
     protected static $activenessResolverCallback = [self::class, 'defaultActivenessResolverCallback'];
-
-    public ?string $route = null;
-    public ?string $url = null;
+    public ?string $url                          = null;
     /** @var array<string, scalar> */
-    public array $metadata = [];
+    public array $metadata   = [];
+    protected ?string $route = null;
 
     public function __construct(
         public string $name
-    )
-    {
+    ) {
     }
 
     public static function getActivenessResolverCallback(): callable
@@ -39,8 +36,8 @@ class Item implements Arrayable
         }
 
         if ($item->route === null) {
+            /** @phpstan-ignore-next-line PHPStan does not understand that here, $item->url can not be null */
             $comparison = parse_url($item->url, PHP_URL_PATH);
-
             if (!is_string($comparison)) {
                 return false;
             }
@@ -50,18 +47,20 @@ class Item implements Arrayable
             return $item->getCurrentPath() === $comparison;
         }
 
+        /* @phpstan-ignore-next-line */
         return request()->routeIs($item->route);
     }
 
     protected function getCurrentPath(): string
     {
+        /* @phpstan-ignore-next-line */
         return '/' . ltrim(request()->path(), '/');
     }
 
-    public function route(string $route, array $context = []): self
+    public function route(string $route, mixed $context = []): self
     {
         $this->route = $route;
-        $this->url = route($route, $context);
+        $this->url   = route($route, $context);
 
         return $this;
     }
@@ -82,10 +81,11 @@ class Item implements Arrayable
     }
 
     /**
-     * @param array{mixed} $arguments
+     * @param array{scalar} $arguments
      */
     public function __call(string $name, array $arguments): self
     {
+        /* @phpstan-ignore-next-line The expected type is array{scalar} but we want to provide a helpful message when given something else */
         if (count($arguments) !== 1) {
             throw new BadMethodCallException("Missing value for metadata key {$name}. Usage: \$item->{$name}('value')");
         }
@@ -95,11 +95,14 @@ class Item implements Arrayable
         return $this;
     }
 
+    /**
+     * @return non-empty-array<string, scalar|null>
+     */
     public function toArray(): array
     {
         return [
-            'name' => $this->name,
-            'url' => $this->url,
+            'name'   => $this->name,
+            'url'    => $this->url,
             'active' => $this->isActive(),
             ...$this->metadata,
         ];
@@ -107,11 +110,13 @@ class Item implements Arrayable
 
     public function isActive(): bool
     {
-        return call_user_func(static::$activenessResolverCallback, $this);
+        return (static::$activenessResolverCallback)($this);
     }
 
+    /** @param mixed[] $parameters */
     public function url(string $url, array $parameters = [], ?bool $secure = null): self
     {
+        /* @phpstan-ignore-next-line */
         $this->url = url($url, $parameters, $secure);
 
         return $this;

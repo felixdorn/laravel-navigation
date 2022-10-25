@@ -15,7 +15,7 @@ it('can match routes with the exact same name', function () {
 
     expect($item->isActive())->toBeFalse();
 
-    request()->setRouteResolver(fn() => $r);
+    request()->setRouteResolver(fn () => $r);
 
     expect($item->isActive())->toBeTrue();
 });
@@ -23,7 +23,7 @@ it('can match routes with the exact same name', function () {
 it('can match routes using a pattern', function (string $route, string $currentRoute, bool $isActive) {
     $r = Route::get($path = time())->name($route);
 
-    request()->setRouteResolver(fn() => $r);
+    request()->setRouteResolver(fn () => $r);
 
     $item = (new Item(''))
         ->route($route)
@@ -38,9 +38,8 @@ it('can match routes using a pattern', function (string $route, string $currentR
     ['articles-but-no', 'articles.*', false],
     ['articles.edit', 'articles.*', true],
     ['articles.tags.edit', 'articles.*.edit', true],
-    ['articles.tags.not-edit', 'articles.*.edit', false]
+    ['articles.tags.not-edit', 'articles.*.edit', false],
 ]);
-
 
 it('can match using a url', function (string $url, string $requestUrl, bool $isActive) {
     $item = mock(Item::class)->makePartial()
@@ -61,7 +60,7 @@ it('can change the activeness resolver', function () {
 
     expect($item->isActive())->toBeFalse();
 
-    Item::setActivenessResolverCallback($callback = fn(Item $item) => true);
+    Item::setActivenessResolverCallback($callback = fn (Item $item) => true);
 
     expect($callback)->toBe(Item::getActivenessResolverCallback());
     expect($item->isActive())->toBeTrue();
@@ -72,13 +71,13 @@ it('can change the activeness resolver', function () {
 
 it('can set metadata', function () {
     $item = new Item('Page');
-    expect($item->metadata)->toBe([]);
     $item->meta(['foo' => 'bar']);
-    expect($item->metadata)->toBe(['foo' => 'bar']);
+    expect($item->toArray())->toHaveKey('foo', 'bar');
     $item->bar('baz');
-    expect($item->metadata)->toBe(['foo' => 'bar', 'bar' => 'baz']);
+    expect($item->toArray())
+        ->toHaveKey('foo', 'bar')
+        ->toHaveKey('bar', 'baz');
 });
-
 
 it('throws an error when adding metadata without a value', function () {
     $item = new Item('');
