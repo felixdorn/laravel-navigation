@@ -11,7 +11,7 @@ class Section implements IteratorAggregate, Arrayable
 {
     use WithNavigationTree;
 
-    public function __construct(public string $name)
+    public function __construct(public readonly string $name)
     {
     }
 

@@ -1,8 +1,8 @@
 <?php
 
 use Felix\Navigation\Item;
-use Felix\Navigation\Navigation;
 use Felix\Navigation\Section;
+use Illuminate\Http\Request;
 
 beforeEach(function () {
     $this->navigation = new Felix\Navigation\Navigation();
@@ -27,26 +27,32 @@ it('can add a section', function () {
 });
 
 it('can add a section unless a condition is false', function (bool|callable $condition) {
-        $expectation = !value($condition) ? $this->defaultExpectedTree : [];
+    $expectation = !value($condition) ? $this->defaultExpectedTree : [];
 
-        $this->navigation->addSectionUnless($condition, 'Section', fn (Section $section) => $section->add('Hello', fn() => null));
+    $this->navigation->addSectionUnless($condition, 'Section', fn(Section $section) => $section->add('Hello', fn() => null));
 
-        expect($this->navigation->tree())->toBe($expectation);
-})->with([true, false, fn () => true, fn () => false]);
+    expect($this->navigation->tree())->toBe($expectation);
+})->with([true, false, fn() => true, fn() => false]);
 
 it('can add a section if a condition is true', function (bool|callable $condition) {
     $expectation = value($condition) ? $this->defaultExpectedTree : [];
 
-    $this->navigation->addSectionIf($condition, 'Section', fn (Section $section) => $section->add('Hello', fn() => null));
+    $this->navigation->addSectionIf($condition, 'Section', fn(Section $section) => $section->add('Hello', fn() => null));
 
     expect($this->navigation->tree())->toBe($expectation);
-})->with([true, false, fn () => true, fn () => false]);
+})->with([true, false, fn() => true, fn() => false]);
 
-it('can be active', function () {
-    $section = new Section('Section');
-    expect($section->isActive())->toBeFalse();
-    $section->add('Hello', fn(Item $item) => $item->href('/yes'));
-    expect($section->isActive())->toBeFalse();
-    $section->add('Hello', fn(Item $item) => $item->activePattern('/'));
+it('is active if any of its children are active', function () {
+    $section = new Section('');
+    $section->add('A', fn(Item $item) => $item->url('/2'));
+    $section->add('B', fn(Item $item) => $item->url('/1'));
+
+    app()->bind('request', fn() => Request::create('/1'));
     expect($section->isActive())->toBeTrue();
+    app()->bind('request', fn() => Request::create('/2'));
+    expect($section->isActive())->toBeTrue();
+
+
+    app()->bind('request', fn() => Request::create('/3'));
+    expect($section->isActive())->toBeFalse();
 });

@@ -28,7 +28,7 @@ composer require felixdorn/laravel-navigation
 ```php
 use Felix\Navigation\Navigation;
 
-Navigation::macro('theName', function (Navigation $navigation) {
+Navigation::new('dashboardSidebar', function (Navigation $navigation) {
     // ...
 });
 ```
@@ -38,7 +38,7 @@ Navigation::macro('theName', function (Navigation $navigation) {
 ```php
 use Felix\Navigation\Navigation;
 
-Navigation::theName();
+Navigation::dashboardSidebar();
 ```
 
 ### Items
@@ -62,30 +62,33 @@ $item->href('articles.edit', ['article' => 1]);
 $item->href('https://repo.new');
 ```
 
-#### Icon
-
-This package integrates seamlessly with [Blade Icons](https://github.com).
-
-```php
-$item->icon('heroicon-eye');
-```
-
-#### Force active state
-
-This will bypass a potentially defined active pattern and force the item to be rendered as an active one.
-
-```php
-$item->alwaysActive();
-```
-
 #### Active pattern
 
-Mark an item as active based on an advanced pattern. The resolved route path is used if no active pattern is provided.
+Mark an item as active based on a pattern. The resolved route path is used if no active pattern is provided.
 Check out [URL Pattern Matcher](https://github.com/laravel-honda/url-pattern-matcher) for more details.
 
 ```php
 $item->activePattern('/articles/*');
 ```
+
+On a des routes type:
+
+'Articles' => 'activePattern' => 'articles.*'
+'About' => 'activePattern' => 'about'
+GET 'articles.index' => '/articles',
+GET 'articles.edit' => '/articles/{article}',
+GET 'articles.create' => '/articles/create',
+GET "articles.show" => "/articles/{article}",
+DELETE "articles.destroy" => "/articles/{article}",
+PUT|PATCH "articles.update" => "/articles/{article}",
+POST "articles.store" => "/articles",
+GET 'about' => '/about',
+GET 'some.other.route' => '/contact'
+GET 'something.else' => '/contact/managers'
+
+```php
+
+
 
 #### Conditionally rendered items
 

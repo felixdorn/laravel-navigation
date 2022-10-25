@@ -49,6 +49,7 @@ trait WithNavigationTree
         return $this;
     }
 
+    /** @param callable(self) $builder */
     public function add(string $name, callable $builder): self
     {
         $this->tree[] = [new Item($name), $builder];

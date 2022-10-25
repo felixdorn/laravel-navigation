@@ -17,7 +17,7 @@ it('is arrayable', function () {
 });
 
 it('can add items', function () {
-    $this->navigation->add('Laravel', fn(Item $item) => $item->href('https://laravel.com'));
+    $this->navigation->add('Laravel', fn(Item $item) => $item->url('https://laravel.com'));
 
     expect($this->navigation->tree())->toBe([
         testItem('Laravel', 'https://laravel.com'),
@@ -59,7 +59,7 @@ it('returns a tree when invoked', function () {
 
 it('does not need to return an item to configure it', function () {
     $this->navigation->add('Page', function (Item $item) {
-        $item->href('//laravel.com');
+        $item->url('//laravel.com');
     });
 
     expect($this->navigation->tree())->toBe([
