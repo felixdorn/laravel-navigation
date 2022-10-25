@@ -42,7 +42,9 @@ Navigation::register('dashboardSidebar', function (Navigation $navigation) {
 ```php
 use Felix\Navigation\Navigation;
 
-Navigation::dashboardSidebar();
+Navigation::dashboardSidebar()->toArray();
+// alternatively, to get the raw tree underneath:
+Navigation::dashboardSidebar()->tree();
 ```
 
 #### Conditionally rendered items
