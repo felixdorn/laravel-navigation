@@ -21,7 +21,7 @@
         "friendsofphp/php-cs-fixer": "^3",
         "orchestra/testbench": "^8.0",
         "pestphp/pest": "^1.0.5",
-        "pestphp/pest-plugin-mock": "^1.0",
+        "pestphp/pest-plugin-mock": "^2.0",
         "phpstan/phpstan": "^1.8.5",
         "symfony/var-dumper": "^6.1"
     },
