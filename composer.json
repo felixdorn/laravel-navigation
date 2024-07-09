@@ -23,7 +23,7 @@
         "pestphp/pest": "^1.0.5",
         "pestphp/pest-plugin-mock": "^1.0",
         "phpstan/phpstan": "^1.8.5",
-        "symfony/var-dumper": "^6.1"
+        "symfony/var-dumper": "^7.1"
     },
     "autoload": {
         "psr-4": {
